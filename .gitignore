@@ -1,0 +1,5 @@
+*.log
+*.class
+bin/*
+.DS_Store
+

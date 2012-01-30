@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="NGuardian" default="dist" basedir=".">
+	<description>NGuardian</description>
+	
+	<property name="src" location="src" />
+	<property name="res" location="res" />
+	<property name="build" location="build" />
+	<property name="lib" location="lib" />
+	
+	<path id="master-classpath">
+		<fileset dir="${lib}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+	
+	<target name="clean">
+		<delete dir="dist" />
+	</target>
+
+	<target name="compile">
+		<!-- compile -->
+		<javac srcdir="${src}" destdir="${build}">
+			<classpath refid="master-classpath" />
+		</javac>
+	</target>
+	
+	<target name="dist_base" depends="compile">
+		<!-- prepare directories -->
+		<mkdir dir="${dist}/bin" />
+		<mkdir dir="${dist}/lib" />
+		
+		<!-- copy libraries -->
+		<copy todir="${dist}/lib">
+			<fileset dir="${lib}">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- copy resources to build directory -->
+		<copy todir="${build}">
+			<fileset dir="${res}" />
+		</copy>
+		
+		<jar jarfile="${dist}/bin/nguardian.jar" basedir="${build}" />
+	</target>
+	
+	<target name="dist">
+		<!-- define destination directory for windows -->
+		<property name="dist" location="dist/windows" />
+		
+		<!-- call task "dist_base" -->
+		<ant target="dist_base" />
+		
+		<!-- copy files depends on platform -->
+		<copy todir="${dist}/bin">
+			<fileset dir="other/windows">
+				<filename name="*.bat" />
+			</fileset>
+		</copy>
+		<copy todir="${dist}">
+			<fileset dir="other/windows">
+				<filename name="*.vbs" />
+			</fileset>
+			<fileset dir="other">
+				<filename name="Readme.txt" />
+			</fileset>
+			<fileset dir=".">
+				<filename name="nguardian.properties" />
+			</fileset>
+		</copy>
+	</target>
+
+</project>
